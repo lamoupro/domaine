@@ -282,6 +282,14 @@ a:focus-visible,button:focus-visible,.tuile:focus-visible,
   display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
   font-size:12px;color:var(--encre-3)}
 
+/* En fin de feuille à dessein : à spécificité égale c'est la dernière déclaration
+   qui l'emporte, un bloc placé plus haut serait annulé par les règles de base. */
+@media(max-width:899px){
+  /* la vidéo mobile est uniformément claire : le texte blanc a besoin d'un voile
+     plus dense qu'au-dessus de l'aérienne, sombre par elle-même */
+  .ouverture .voile{background:linear-gradient(180deg,rgba(18,20,16,.6) 0%,
+    rgba(18,20,16,.36) 28%,rgba(18,20,16,.44) 62%,rgba(18,20,16,.72) 100%)}
+}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
