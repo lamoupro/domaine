@@ -6,7 +6,8 @@
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title>Domaine — mariages et réceptions</title>
 <meta name="description" content="Maquette de site pour lieu de réception. Document de travail non contractuel.">
-<link rel="preload" as="image" href="video/poster.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="video/poster.jpg" media="(min-width:900px)" fetchpriority="high">
+<link rel="preload" as="image" href="video/poster-mobile.jpg" media="(max-width:899px)" fetchpriority="high">
 <link rel="preload" as="font" type="font/woff2" href="fonts/Jost-latin.woff2" crossorigin>
 <style>
 /* Police auto-hébergée. Jost, géométrique et fine, à la place du serif que tous les
@@ -68,7 +69,13 @@ h1,h2,h3{font-weight:300;margin:0;text-wrap:balance;letter-spacing:-.01em}
   transition:transform .6s var(--lent)}
 .lien-souligne:hover::after,.lien-souligne:focus-visible::after{transform:scaleX(1);
   transform-origin:0 50%}
-@media(max-width:760px){.a-droite a:first-child{display:none}}
+@media(max-width:760px){
+  /* sur téléphone on ne garde que le nom et « Visiter » : trois entrées se
+     chevauchaient et « Le domaine » passait à la ligne */
+  .a-droite a:first-child{display:none}
+  .barre .enveloppe > a.lien-souligne:first-child{display:none}
+  .enseigne{max-width:64vw}
+}
 
 /* ====== ouverture : vidéo en dézoom ====== */
 .ouverture{position:relative;height:100vh;height:100svh;min-height:560px;
@@ -82,9 +89,11 @@ h1,h2,h3{font-weight:300;margin:0;text-wrap:balance;letter-spacing:-.01em}
 html.js .media{transform:scale(1.3);animation:recul 3.4s var(--lent) .15s both}
 @keyframes recul{to{transform:scale(1)}}
 html.anime-fini .media{animation:none!important;transform:none!important}
+/* le haut est assombri davantage : la barre est en blanc et la vidéo mobile
+   est un flou clair sur lequel elle se perdait */
 .ouverture .voile{position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(18,20,16,.5) 0%,rgba(18,20,16,.12) 32%,
-             rgba(18,20,16,.16) 62%,rgba(18,20,16,.62) 100%)}
+  background:linear-gradient(180deg,rgba(18,20,16,.66) 0%,rgba(18,20,16,.2) 26%,
+             rgba(18,20,16,.24) 58%,rgba(18,20,16,.68) 100%)}
 /* 26ch, sinon « week-end » se coupe au trait d'union en plein milieu de la phrase */
 .devise{position:relative;z-index:2;font-size:clamp(21px,2.6vw,30px);font-weight:300;
   line-height:1.45;max-width:26ch;margin:0 auto;letter-spacing:.005em;
@@ -117,41 +126,64 @@ html.js .glisse.vu[data-r="1"]{transition-delay:.12s}
 html.js .glisse.vu[data-r="2"]{transition-delay:.24s}
 html.js .glisse.vu[data-r="3"]{transition-delay:.36s}
 
-/* ====== disponibilités, sans couleur ni pastille ====== */
-.saison{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));
-  gap:clamp(28px,4vw,56px);border-top:1px solid var(--filet);padding-top:34px}
-.mois h3{font-size:19px;font-weight:400;letter-spacing:.02em;margin-bottom:4px}
-.mois .reste{display:block;font-size:10.5px;font-weight:400;letter-spacing:.22em;
-  text-transform:uppercase;color:var(--encre-3);margin-bottom:20px}
-.jours{list-style:none;margin:0;padding:0}
-.jours li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
-  padding:9px 0;border-bottom:1px solid var(--filet);font-size:15px;font-weight:300;
-  font-variant-numeric:tabular-nums}
-.jours li .quoi{font-size:10px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--encre-3)}
-.jours li.pris{color:var(--encre-3)}
-.jours li.pris .jour{text-decoration:line-through;text-decoration-thickness:1px}
-.jours li.libre{color:var(--encre)}
-.jours li.libre .quoi{color:var(--encre)}
+/* ====== LE BLOC NOIR : dates et prix ======
+   Rupture délibérée avec le reste de la page. Ce sont les deux informations que
+   les concurrents cachent : elles doivent être les plus visibles du site. */
+.essentiel{background:var(--nuit);color:#F4F3ED}
+.essentiel .mention{color:rgba(244,243,237,.5)}
+.essentiel .enonce{color:#F4F3ED}
+.essentiel .texte{color:rgba(244,243,237,.66)}
+.filet-clair{border-top:1px solid rgba(244,243,237,.16)}
 
-/* ====== tarifs, en filets ====== */
-.formules{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:0;
-  border-top:1px solid var(--filet)}
-.formule{padding:38px clamp(20px,2.6vw,40px) 34px 0;border-right:1px solid var(--filet)}
-.formule:last-child{border-right:0}
-.formule h3{font-size:23px;font-weight:300;margin-bottom:8px}
-.formule .quand{font-size:10.5px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--encre-3)}
-.montant{font-size:34px;font-weight:300;margin:26px 0 6px;color:var(--encre)}
-.montant .vide{color:var(--filet);letter-spacing:.1em}
-.montant small{font-size:14px;color:var(--encre-2)}
-.formule ul{list-style:none;margin:24px 0 0;padding:0}
-.formule li{font-size:15px;color:var(--encre-2);padding:9px 0;border-bottom:1px solid var(--filet)}
+/* -- dates -- */
+.compte-dates{font-size:clamp(38px,6vw,84px);line-height:1.02;font-weight:300;
+  letter-spacing:-.025em;margin:0 0 14px}
+.compte-dates b{font-weight:300}
+.mois-ligne{display:grid;grid-template-columns:clamp(96px,13vw,168px) 1fr;
+  gap:clamp(16px,3vw,44px);align-items:baseline;padding:26px 0;
+  border-bottom:1px solid rgba(244,243,237,.13)}
+.mois-ligne:last-child{border-bottom:0}
+.mois-nom{font-size:12px;font-weight:400;letter-spacing:.24em;text-transform:uppercase;
+  color:rgba(244,243,237,.62)}
+.dates-libres{display:flex;flex-wrap:wrap;align-items:baseline;gap:clamp(14px,2.4vw,34px)}
+.date-libre{font-size:clamp(30px,4.4vw,54px);font-weight:300;line-height:1;
+  font-variant-numeric:tabular-nums;color:#F4F3ED;background:none;border:0;padding:0;
+  cursor:pointer;font-family:var(--sans);position:relative;transition:opacity .4s var(--lent)}
+.date-libre::after{content:"";position:absolute;left:0;right:0;bottom:-9px;height:1px;
+  background:#F4F3ED;transform:scaleX(0);transform-origin:0 50%;
+  transition:transform .5s var(--lent)}
+.date-libre:hover::after,.date-libre:focus-visible::after{transform:scaleX(1)}
+.complet{font-size:13px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(244,243,237,.34)}
+.dates-prises{margin-top:12px;font-size:13px;font-weight:300;
+  color:rgba(244,243,237,.3);font-variant-numeric:tabular-nums}
+.dates-prises s{text-decoration-thickness:1px;margin-right:12px}
+.aide-dates{margin-top:26px;font-size:13px;color:rgba(244,243,237,.5)}
+
+/* -- prix -- */
+.formules{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:0}
+.formule{padding:44px clamp(22px,3vw,52px) 40px 0;
+  border-right:1px solid rgba(244,243,237,.13)}
+.formule:last-child{border-right:0;padding-right:0}
+.formule h3{font-size:clamp(22px,2.4vw,29px);font-weight:300;margin-bottom:10px}
+.formule .quand{font-size:11px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(244,243,237,.5)}
+.montant{font-size:clamp(46px,6.4vw,80px);font-weight:300;line-height:1;
+  letter-spacing:-.03em;margin:30px 0 10px;color:#F4F3ED;font-variant-numeric:tabular-nums}
+.montant .vide{color:rgba(244,243,237,.28);letter-spacing:.02em}
+.montant small{font-size:.34em;color:rgba(244,243,237,.6);letter-spacing:0}
+.formule ul{list-style:none;margin:26px 0 0;padding:0}
+.formule li{font-size:15.5px;color:rgba(244,243,237,.72);padding:11px 0;
+  border-bottom:1px solid rgba(244,243,237,.11)}
 .formule li:last-child{border-bottom:0}
-.note{margin-top:46px;font-size:15px;color:var(--encre-2);max-width:62ch;
-  padding-left:20px;border-left:1px solid var(--filet)}
-@media(max-width:700px){.formule{border-right:0;border-bottom:1px solid var(--filet);
-  padding-right:0}.formule:last-child{border-bottom:0}}
+.note{margin-top:52px;font-size:15px;color:rgba(244,243,237,.56);max-width:64ch;
+  padding-left:20px;border-left:1px solid rgba(244,243,237,.3)}
+@media(max-width:760px){
+  .formule{border-right:0;border-bottom:1px solid rgba(244,243,237,.13);
+    padding:34px 0 30px}
+  .formule:last-child{border-bottom:0}
+  .mois-ligne{grid-template-columns:1fr;gap:10px;padding:22px 0}
+}
 
 /* ====== lieux, image pleine largeur ====== */
 .lieu{margin-bottom:var(--pas)}
@@ -277,10 +309,12 @@ a:focus-visible,button:focus-visible,.tuile:focus-visible,
 
 <header class="ouverture" id="haut">
   <div class="media" id="media">
-    <img id="poster" src="video/poster.jpg" alt="" width="960" height="540"
-         fetchpriority="high" decoding="async">
-    <video id="film" poster="video/poster.jpg" muted loop playsinline
-           preload="none" aria-hidden="true" tabindex="-1"></video>
+    <picture>
+      <source media="(min-width:900px)" srcset="video/poster.jpg">
+      <img id="poster" src="video/poster-mobile.jpg" alt="" width="960" height="540"
+           fetchpriority="high" decoding="async">
+    </picture>
+    <video id="film" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
   </div>
   <div class="voile"></div>
   <p class="devise" id="devise">Un seul mariage par week-end.<br>Le reste du temps, le silence.</p>
@@ -307,21 +341,23 @@ a:focus-visible,button:focus-visible,.tuile:focus-visible,
   </div>
 </section>
 
-<section class="section glisse" id="saison">
+<section class="section essentiel glisse" id="saison">
   <div class="enveloppe">
     <p class="mention">Saison <span id="annee-saison">2027</span></p>
-    <h2 class="enonce large">Ce qu'il reste de la saison prochaine.</h2>
-    <p class="texte" style="margin-bottom:56px">Les samedis encore ouverts. Une option se pose
-    sans engagement et se tient quinze jours.</p>
-    <div class="saison" id="calendrier"></div>
+    <p class="compte-dates" id="compte-dates">Il reste <b id="nb-libres">—</b> samedis.</p>
+    <p class="texte" style="margin-bottom:52px">Une seule réception par week-end. Choisissez une
+    date, elle se reporte dans la demande de visite.</p>
+    <div id="calendrier" class="filet-clair"></div>
+    <p class="aide-dates">Une option se pose sans engagement et se tient quinze jours.</p>
   </div>
 </section>
 
-<section class="section glisse" id="tarifs">
+<section class="section essentiel" id="tarifs" style="padding-top:0">
   <div class="enveloppe">
+    <div class="filet-clair" style="padding-top:var(--pas)">
     <p class="mention">Location</p>
-    <h2 class="enonce large">Ce que cela coûte, écrit noir sur blanc.</h2>
-    <p class="texte" style="margin-bottom:56px">Le lieu seul, sans prestataire imposé. Votre traiteur,
+    <h2 class="enonce large">Ce que cela coûte, sans avoir à le demander.</h2>
+    <p class="texte" style="margin-bottom:52px">Le lieu seul, sans prestataire imposé. Votre traiteur,
     votre décoration, vos horaires.</p>
     <div class="formules">
       <div class="formule">
@@ -359,6 +395,7 @@ a:focus-visible,button:focus-visible,.tuile:focus-visible,
     <p class="note">Les montants sont laissés vides à dessein : ce sont vos tarifs, à vous de les
     fixer. Ce qui compte, c'est qu'ils figurent ici. Plus de la moitié des lieux de réception
     n'en affichent aucun, et perdent les couples avant le premier appel.</p>
+    </div>
   </div>
 </section>
 
@@ -577,21 +614,24 @@ document.documentElement.className += ' js';
   /* ---- la vidéo n'est chargée qu'après la page : l'image d'attente porte l'affichage
      initial, la vidéo ne pèse donc pas sur le temps de premier rendu ---- */
   var film = document.getElementById('film');
+  /* seuil calé sur le poids réel : 290 Ko passent en 1,5 s sur une 3G, il n'y a
+     que les connexions vraiment lentes et le mode économie qui justifient de sauter */
   var eco = navigator.connection && (navigator.connection.saveData ||
-            /2g|3g/.test(navigator.connection.effectiveType || ''));
-  /* Pas de vidéo sur téléphone : le décodage coûte près de trois secondes de
-     processeur sur un mobile d'entrée de gamme et faisait chuter la note de 99 à 32.
-     Le dézoom sur l'image d'attente conserve l'essentiel de l'effet, sans le prix. */
+            /^(slow-2g|2g)$/.test(navigator.connection.effectiveType || ''));
+  /* Deux vidéos, choisies par la taille de l'écran. Sur téléphone, un plan serré et
+     lent : peu de détail net et peu de mouvement, donc un fichier dix fois plus léger
+     et un décodage que le téléphone encaisse. L'aérienne coûtait 2,9 s de blocage. */
   var grandEcran = window.matchMedia('(min-width: 900px)').matches;
+  var fichierVideo = grandEcran ? 'video/accueil.mp4' : 'video/mobile.mp4';
   function chargerVideo() {
-    if (doux || eco || !grandEcran) return;
+    if (doux || eco) return;
     /* l'écouteur AVANT play() : sinon l'événement est déjà passé quand on s'y abonne
        et la vidéo reste invisible derrière son image d'attente */
     function afficher() { film.classList.add('jouee'); }
     film.addEventListener('playing', afficher, { once: true });
     film.addEventListener('loadeddata', afficher, { once: true });
     var s = document.createElement('source');
-    s.src = 'video/accueil.mp4'; s.type = 'video/mp4';
+    s.src = fichierVideo; s.type = 'video/mp4';
     film.appendChild(s);
     film.load();
     var joue = film.play();
@@ -638,6 +678,8 @@ document.documentElement.className += ' js';
   var cal = document.getElementById('calendrier');
   var bloc = document.createDocumentFragment();
 
+  var totalLibres = 0;
+
   [4, 5, 6, 7, 8].forEach(function (m) {
     var samedis = [], d = new Date(ANNEE, m, 1);
     while (d.getMonth() === m) {
@@ -651,29 +693,70 @@ document.documentElement.className += ' js';
       var h = x.getDate() * 2654435761 + (m + 1) * 40503;
       h = (h ^ (h >>> 13)) >>> 0;
       var g = h % 100;
-      return g < 62 ? 'pris' : (g < 80 ? 'option' : 'libre');
+      /* deux états seulement : « option » brouillait la lecture, et ces deux
+         informations doivent être les plus lisibles du site */
+      return g < 68 ? 'pris' : 'libre';
     });
-    var libres = etats.filter(function (e) { return e === 'libre'; }).length;
 
-    var art = document.createElement('article');
-    art.className = 'mois';
-    var t = document.createElement('h3'); t.textContent = MOIS[m];
-    var r = document.createElement('span'); r.className = 'reste';
-    r.textContent = libres === 0 ? 'complet'
-                  : libres + (libres > 1 ? ' samedis libres' : ' samedi libre');
-    var ul = document.createElement('ul'); ul.className = 'jours';
+    var ligne = document.createElement('div');
+    ligne.className = 'mois-ligne';
+    var nom = document.createElement('span');
+    nom.className = 'mois-nom';
+    nom.textContent = MOIS[m];
+    var droite = document.createElement('div');
+
+    var libres = document.createElement('div');
+    libres.className = 'dates-libres';
+    var nbLibres = 0;
     samedis.forEach(function (x, i) {
-      var e = etats[i];
-      var li = document.createElement('li'); li.className = e;
-      var j = document.createElement('span'); j.className = 'jour'; j.textContent = x.getDate();
-      var q = document.createElement('span'); q.className = 'quoi';
-      q.textContent = e === 'pris' ? 'réservé' : (e === 'option' ? 'option' : 'libre');
-      li.appendChild(j); li.appendChild(q); ul.appendChild(li);
+      if (etats[i] !== 'libre') return;
+      nbLibres++; totalLibres++;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'date-libre';
+      b.textContent = x.getDate();
+      b.setAttribute('aria-label',
+        'Choisir le samedi ' + x.getDate() + ' ' + MOIS[m] + ' ' + ANNEE);
+      b.dataset.iso = ANNEE + '-' + ('0' + (m + 1)).slice(-2) +
+                      '-' + ('0' + x.getDate()).slice(-2);
+      libres.appendChild(b);
     });
-    art.appendChild(t); art.appendChild(r); art.appendChild(ul);
-    bloc.appendChild(art);
+    if (nbLibres === 0) {
+      var c = document.createElement('span');
+      c.className = 'complet';
+      c.textContent = 'complet';
+      libres.appendChild(c);
+    }
+    droite.appendChild(libres);
+
+    var prises = samedis.filter(function (x, i) { return etats[i] !== 'libre'; });
+    if (prises.length) {
+      var p2 = document.createElement('p');
+      p2.className = 'dates-prises';
+      prises.forEach(function (x, i) {
+        var s = document.createElement('s');
+        s.textContent = x.getDate();
+        p2.appendChild(s);
+      });
+      droite.appendChild(p2);
+    }
+    ligne.appendChild(nom); ligne.appendChild(droite);
+    bloc.appendChild(ligne);
   });
   cal.appendChild(bloc);
+  var nb = document.getElementById('nb-libres');
+  if (nb) nb.textContent = totalLibres;
+
+  /* un clic sur une date libre la reporte dans la demande de visite : c'est le geste
+     que le site du prospect ne sait pas faire, et il se démontre en deux secondes */
+  cal.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('.date-libre') : null;
+    if (!b) return;
+    var champ = document.getElementById('date');
+    if (champ) champ.value = b.dataset.iso;
+    var cible = document.getElementById('visite');
+    if (cible) cible.scrollIntoView({ behavior: doux ? 'auto' : 'smooth', block: 'start' });
+  });
 
   /* ---- visionneuse ---- */
   var vis = document.getElementById('visionneuse');
