@@ -1,0 +1,3 @@
+# Maquette de demonstration : ne doit etre indexee par aucun moteur.
+User-agent: *
+Disallow: /

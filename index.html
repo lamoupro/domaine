@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Domaine — mariages et réceptions</title>
+<meta name="description" content="Maquette de site pour lieu de réception. Document de travail non contractuel.">
+<link rel="preload" as="image" href="video/poster.jpg" fetchpriority="high">
+<link rel="preload" as="font" type="font/woff2" href="fonts/Jost-latin.woff2" crossorigin>
+<style>
+/* Police auto-hébergée. Jost, géométrique et fine, à la place du serif que tous les
+   châteaux emploient : c'est la rupture visuelle la plus nette qu'on puisse offrir.
+   Police variable, un seul fichier couvre 300 à 500. */
+@font-face{font-family:'Jost';font-style:normal;font-weight:300 500;font-display:swap;
+  src:url(fonts/Jost-latin.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,
+  U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Jost';font-style:normal;font-weight:300 500;font-display:swap;
+  src:url(fonts/Jost-latin-ext.woff2) format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1D00-1DBF,
+  U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+
+:root{
+  --ivoire:#F2F1EB;
+  --ivoire-2:#FAF9F5;
+  --encre:#26261F;
+  --encre-2:#6F6D62;
+  --encre-3:#9C9A8E;
+  --filet:#DEDCD1;
+  --nuit:#1A1C17;
+  --sans:'Jost',system-ui,-apple-system,'Helvetica Neue',sans-serif;
+  --lent:cubic-bezier(.16,1,.3,1);
+  --pas:clamp(96px,15vw,220px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivoire);color:var(--encre);font-family:var(--sans);
+  font-size:19px;font-weight:300;line-height:1.62;letter-spacing:.005em;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-weight:300;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.enveloppe{max-width:1280px;margin:0 auto;padding:0 clamp(22px,4vw,56px)}
+.etroit{max-width:660px}
+.section{padding:var(--pas) 0;position:relative}
+
+/* libellé en petites capitales espacées, seul ornement du site */
+.mention{font-size:10.5px;font-weight:400;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--encre-3);margin:0 0 34px}
+
+/* ====== barre ====== */
+.barre{position:fixed;top:0;left:0;right:0;z-index:60;padding:26px 0;
+  transition:padding .7s var(--lent),background .7s var(--lent),color .7s var(--lent)}
+.barre .enveloppe{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px}
+.barre{color:#F4F3ED}
+.barre.posee{background:rgba(242,241,235,.94);backdrop-filter:blur(14px) saturate(1.3);
+  color:var(--encre);padding:15px 0;box-shadow:0 1px 0 var(--filet)}
+.barre a{font-size:12px;font-weight:400;letter-spacing:.2em;text-transform:uppercase}
+.enseigne{grid-column:2;justify-self:center;display:flex;align-items:center;gap:12px;
+  font-size:clamp(13px,1.5vw,17px);font-weight:300;letter-spacing:.34em;text-transform:uppercase;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:52vw}
+.enseigne img{max-height:34px;width:auto}
+.a-droite{grid-column:3;justify-self:end;display:flex;gap:26px}
+.lien-souligne{position:relative;padding-bottom:4px}
+.lien-souligne::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:100% 50%;
+  transition:transform .6s var(--lent)}
+.lien-souligne:hover::after,.lien-souligne:focus-visible::after{transform:scaleX(1);
+  transform-origin:0 50%}
+@media(max-width:760px){.a-droite a:first-child{display:none}}
+
+/* ====== ouverture : vidéo en dézoom ====== */
+.ouverture{position:relative;height:100vh;height:100svh;min-height:560px;
+  overflow:hidden;background:var(--nuit);color:#F4F3ED;display:flex;
+  align-items:center;justify-content:center;text-align:center}
+.media{position:absolute;inset:0;overflow:hidden}
+.media img,.media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.media video{opacity:0;transition:opacity 1.6s var(--lent)}
+.media video.jouee{opacity:1}
+/* le dézoom : on ouvre serré, on recule, le domaine se révèle */
+html.js .media{transform:scale(1.3);animation:recul 3.4s var(--lent) .15s both}
+@keyframes recul{to{transform:scale(1)}}
+html.anime-fini .media{animation:none!important;transform:none!important}
+.ouverture .voile{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(18,20,16,.5) 0%,rgba(18,20,16,.12) 32%,
+             rgba(18,20,16,.16) 62%,rgba(18,20,16,.62) 100%)}
+/* 26ch, sinon « week-end » se coupe au trait d'union en plein milieu de la phrase */
+.devise{position:relative;z-index:2;font-size:clamp(21px,2.6vw,30px);font-weight:300;
+  line-height:1.45;max-width:26ch;margin:0 auto;letter-spacing:.005em;
+  text-wrap:balance;hyphens:none;
+  text-shadow:0 1px 30px rgba(12,16,12,.55)}
+.defiler{position:absolute;left:50%;bottom:38px;z-index:2;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  font-size:10.5px;font-weight:400;letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(244,243,237,.82)}
+.defiler i{display:block;width:1px;height:52px;background:rgba(244,243,237,.3);
+  position:relative;overflow:hidden}
+.defiler i::after{content:"";position:absolute;inset:0;background:#F4F3ED;
+  animation:coule 2.6s var(--lent) infinite}
+@keyframes coule{0%{transform:translateY(-100%)}62%,100%{transform:translateY(100%)}}
+
+/* ====== énoncés ====== */
+.enonce{font-size:clamp(30px,4.4vw,58px);line-height:1.16;font-weight:300;
+  letter-spacing:-.018em;margin:0 0 40px;max-width:17ch}
+.enonce.large{max-width:22ch}
+.texte{font-size:19px;color:var(--encre-2);max-width:56ch;margin:0}
+.texte+.texte{margin-top:22px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:clamp(36px,7vw,120px);align-items:start}
+@media(max-width:860px){.duo{grid-template-columns:1fr;gap:34px}}
+
+/* ====== apparition ====== */
+html.js .glisse{opacity:0;transform:translateY(34px)}
+html.js .glisse.vu{opacity:1;transform:none;
+  transition:opacity 1.5s var(--lent),transform 1.5s var(--lent)}
+html.js .glisse.vu[data-r="1"]{transition-delay:.12s}
+html.js .glisse.vu[data-r="2"]{transition-delay:.24s}
+html.js .glisse.vu[data-r="3"]{transition-delay:.36s}
+
+/* ====== disponibilités, sans couleur ni pastille ====== */
+.saison{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));
+  gap:clamp(28px,4vw,56px);border-top:1px solid var(--filet);padding-top:34px}
+.mois h3{font-size:19px;font-weight:400;letter-spacing:.02em;margin-bottom:4px}
+.mois .reste{display:block;font-size:10.5px;font-weight:400;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--encre-3);margin-bottom:20px}
+.jours{list-style:none;margin:0;padding:0}
+.jours li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:9px 0;border-bottom:1px solid var(--filet);font-size:15px;font-weight:300;
+  font-variant-numeric:tabular-nums}
+.jours li .quoi{font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--encre-3)}
+.jours li.pris{color:var(--encre-3)}
+.jours li.pris .jour{text-decoration:line-through;text-decoration-thickness:1px}
+.jours li.libre{color:var(--encre)}
+.jours li.libre .quoi{color:var(--encre)}
+
+/* ====== tarifs, en filets ====== */
+.formules{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:0;
+  border-top:1px solid var(--filet)}
+.formule{padding:38px clamp(20px,2.6vw,40px) 34px 0;border-right:1px solid var(--filet)}
+.formule:last-child{border-right:0}
+.formule h3{font-size:23px;font-weight:300;margin-bottom:8px}
+.formule .quand{font-size:10.5px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--encre-3)}
+.montant{font-size:34px;font-weight:300;margin:26px 0 6px;color:var(--encre)}
+.montant .vide{color:var(--filet);letter-spacing:.1em}
+.montant small{font-size:14px;color:var(--encre-2)}
+.formule ul{list-style:none;margin:24px 0 0;padding:0}
+.formule li{font-size:15px;color:var(--encre-2);padding:9px 0;border-bottom:1px solid var(--filet)}
+.formule li:last-child{border-bottom:0}
+.note{margin-top:46px;font-size:15px;color:var(--encre-2);max-width:62ch;
+  padding-left:20px;border-left:1px solid var(--filet)}
+@media(max-width:700px){.formule{border-right:0;border-bottom:1px solid var(--filet);
+  padding-right:0}.formule:last-child{border-bottom:0}}
+
+/* ====== lieux, image pleine largeur ====== */
+.lieu{margin-bottom:var(--pas)}
+.lieu:last-child{margin-bottom:0}
+.chassis{position:relative;overflow:hidden}
+.chassis img{width:100%;aspect-ratio:16/9;object-fit:cover;
+  transition:transform 2.4s var(--lent)}
+.lieu:hover .chassis img{transform:scale(1.045)}
+.chassis::after{content:"";position:absolute;inset:0;background:var(--ivoire);
+  transform:scaleY(1);transform-origin:50% 100%;transition:transform 1.5s var(--lent)}
+.vu .chassis::after{transform:scaleY(0)}
+.sous-image{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,80px);
+  margin-top:28px;align-items:start}
+.sous-image h3{font-size:clamp(24px,2.8vw,34px);font-weight:300;margin-bottom:6px}
+.sous-image .jauge{font-size:10.5px;font-weight:400;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--encre-3)}
+@media(max-width:760px){.sous-image{grid-template-columns:1fr;gap:14px}}
+
+/* ====== galerie ====== */
+.mosaique{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:12px}
+.tuile{position:relative;overflow:hidden;cursor:zoom-in;background:var(--filet)}
+.tuile img{width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform 2s var(--lent)}
+.tuile:hover img{transform:scale(1.06)}
+.tuile::after{content:"";position:absolute;inset:0;background:var(--ivoire);
+  transform:scaleY(1);transform-origin:50% 100%;transition:transform 1.3s var(--lent)}
+.vu .tuile::after{transform:scaleY(0)}
+.vu .tuile:nth-child(2)::after{transition-delay:.09s}
+.vu .tuile:nth-child(3)::after{transition-delay:.18s}
+.vu .tuile:nth-child(4)::after{transition-delay:.27s}
+.vu .tuile:nth-child(5)::after{transition-delay:.36s}
+.vu .tuile:nth-child(6)::after{transition-delay:.45s}
+.vu .tuile:nth-child(7)::after{transition-delay:.54s}
+.vu .tuile:nth-child(8)::after{transition-delay:.63s}
+.tuile.haute{grid-row:span 2}
+.tuile.haute img{aspect-ratio:1/2.06}
+.tuile.large{grid-column:span 2}
+.tuile.large img{aspect-ratio:2.06/1}
+
+.visionneuse{position:fixed;inset:0;z-index:100;display:flex;align-items:center;
+  justify-content:center;padding:26px;background:rgba(16,18,14,.96);opacity:0;
+  pointer-events:none;transition:opacity .7s var(--lent)}
+.visionneuse.ouverte{opacity:1;pointer-events:auto}
+.visionneuse img{max-width:min(1180px,94vw);max-height:88vh;width:auto;
+  transform:scale(.96);transition:transform .9s var(--lent)}
+.visionneuse.ouverte img{transform:scale(1)}
+.fermer{position:absolute;top:24px;right:26px;background:none;border:0;cursor:pointer;
+  color:#F4F3ED;font-family:var(--sans);font-size:10.5px;font-weight:400;
+  letter-spacing:.28em;text-transform:uppercase;padding:12px}
+
+/* ====== citation ====== */
+.citation{background:var(--nuit);color:#F4F3ED}
+.citation .mention{color:rgba(244,243,237,.5)}
+.citation blockquote{margin:0;font-size:clamp(24px,3.4vw,44px);font-weight:300;
+  line-height:1.3;letter-spacing:-.012em;max-width:20ch}
+.citation figcaption{margin-top:34px;font-size:10.5px;font-weight:400;letter-spacing:.26em;
+  text-transform:uppercase;color:rgba(244,243,237,.56)}
+.autres-avis{margin-top:64px;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:40px;border-top:1px solid rgba(244,243,237,.16);padding-top:40px}
+.autres-avis p{margin:0;font-size:16px;font-weight:300;color:rgba(244,243,237,.78)}
+.autres-avis span{display:block;margin-top:14px;font-size:10px;letter-spacing:.24em;
+  text-transform:uppercase;color:rgba(244,243,237,.45)}
+
+/* ====== visite ====== */
+.champs{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0;
+  border-top:1px solid var(--filet)}
+.champ{display:flex;flex-direction:column;gap:10px;padding:26px 26px 26px 0;
+  border-right:1px solid var(--filet);border-bottom:1px solid var(--filet)}
+.champ:last-of-type{border-right:0}
+.champ label{font-size:10.5px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--encre-3)}
+.champ input,.champ select{font-family:var(--sans);font-size:17px;font-weight:300;
+  color:var(--encre);background:none;border:0;padding:0;width:100%}
+.champ input:focus,.champ select:focus{outline:none}
+.champ:focus-within label{color:var(--encre)}
+a:focus-visible,button:focus-visible,.tuile:focus-visible,
+.champ input:focus-visible,.champ select:focus-visible{outline:1px solid var(--encre);
+  outline-offset:6px}
+.envoyer{margin-top:34px;background:none;border:0;padding:0;cursor:pointer;
+  font-family:var(--sans);font-size:12px;font-weight:400;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--encre);display:inline-flex;align-items:center;gap:14px}
+.envoyer .trait{display:block;width:56px;height:1px;background:var(--encre);
+  transition:width .7s var(--lent)}
+.envoyer:hover .trait{width:88px}
+.accuse{margin-top:26px;font-size:16px;color:var(--encre-2);
+  padding-left:20px;border-left:1px solid var(--encre)}
+
+/* ====== pied ====== */
+.pied{padding:var(--pas) 0 44px;border-top:1px solid var(--filet)}
+.pied .colonnes{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:40px}
+.pied h3{font-size:10.5px;font-weight:400;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--encre-3);margin-bottom:16px}
+.pied p{margin:0 0 6px;font-size:16px;color:var(--encre-2)}
+.pied .enseigne-pied{font-size:19px;font-weight:300;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--encre);margin-bottom:12px}
+.bas{margin-top:70px;padding-top:22px;border-top:1px solid var(--filet);
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
+  font-size:12px;color:var(--encre-3)}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html.js .glisse{opacity:1!important;transform:none!important}
+  html.js .media{transform:none!important}
+  .chassis::after,.tuile::after{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="barre" id="barre">
+  <div class="enveloppe">
+    <a class="lien-souligne" href="#lieux" style="grid-column:1;justify-self:start">Le domaine</a>
+    <a class="enseigne" href="#haut">
+      <img id="logo" alt="" hidden>
+      <span data-nom>Votre Domaine</span>
+    </a>
+    <div class="a-droite">
+      <a class="lien-souligne" href="#saison">Disponibilités</a>
+      <a class="lien-souligne" href="#visite">Visiter</a>
+    </div>
+  </div>
+</nav>
+
+<header class="ouverture" id="haut">
+  <div class="media" id="media">
+    <img id="poster" src="video/poster.jpg" alt="" width="960" height="540"
+         fetchpriority="high" decoding="async">
+    <video id="film" poster="video/poster.jpg" muted loop playsinline
+           preload="none" aria-hidden="true" tabindex="-1"></video>
+  </div>
+  <div class="voile"></div>
+  <p class="devise" id="devise">Un seul mariage par week-end.<br>Le reste du temps, le silence.</p>
+  <a class="defiler" href="#manifeste"><i aria-hidden="true"></i>Défiler</a>
+</header>
+
+<main>
+
+<section class="section" id="manifeste">
+  <div class="enveloppe">
+    <div class="duo glisse">
+      <div>
+        <p class="mention"><span data-commune>Dordogne</span> — jusqu'à <span data-capacite>200</span> convives</p>
+        <h2 class="enonce">Le calme est devenu le vrai luxe.</h2>
+      </div>
+      <div>
+        <p class="texte">Nous n'accueillons qu'une réception par week-end. Vous arrivez le vendredi,
+        vous repartez le dimanche, et pendant deux jours le domaine ne connaît que vous.</p>
+        <p class="texte">Pas de rotation, pas d'autres mariés qui attendent leur tour dans la cour,
+        pas d'horaire imposé par le service suivant. C'est la seule promesse que nous faisons,
+        et elle décide de tout le reste.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section glisse" id="saison">
+  <div class="enveloppe">
+    <p class="mention">Saison <span id="annee-saison">2027</span></p>
+    <h2 class="enonce large">Ce qu'il reste de la saison prochaine.</h2>
+    <p class="texte" style="margin-bottom:56px">Les samedis encore ouverts. Une option se pose
+    sans engagement et se tient quinze jours.</p>
+    <div class="saison" id="calendrier"></div>
+  </div>
+</section>
+
+<section class="section glisse" id="tarifs">
+  <div class="enveloppe">
+    <p class="mention">Location</p>
+    <h2 class="enonce large">Ce que cela coûte, écrit noir sur blanc.</h2>
+    <p class="texte" style="margin-bottom:56px">Le lieu seul, sans prestataire imposé. Votre traiteur,
+    votre décoration, vos horaires.</p>
+    <div class="formules">
+      <div class="formule">
+        <h3>La journée</h3>
+        <span class="quand">Samedi 10 h — dimanche 2 h</span>
+        <p class="montant"><span class="vide">———</span> <small>€</small></p>
+        <ul>
+          <li>Salle de réception et cuisine professionnelle</li>
+          <li>Parc et espace cérémonie</li>
+          <li>Mobilier, tables et chaises</li>
+        </ul>
+      </div>
+      <div class="formule">
+        <h3>Le week-end</h3>
+        <span class="quand">Vendredi 14 h — dimanche 18 h</span>
+        <p class="montant"><span class="vide">———</span> <small>€</small></p>
+        <ul>
+          <li>Tout ce que comprend la journée</li>
+          <li>Douze chambres, vingt-six couchages</li>
+          <li>Installation la veille, brunch le dimanche</li>
+          <li>Ménage de fin de séjour</li>
+        </ul>
+      </div>
+      <div class="formule">
+        <h3>La cérémonie</h3>
+        <span class="quand">Une demi-journée</span>
+        <p class="montant"><span class="vide">———</span> <small>€</small></p>
+        <ul>
+          <li>Espace cérémonie et parc</li>
+          <li>Vin d'honneur jusqu'à 20 h</li>
+          <li>Renouvellement de vœux</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">Les montants sont laissés vides à dessein : ce sont vos tarifs, à vous de les
+    fixer. Ce qui compte, c'est qu'ils figurent ici. Plus de la moitié des lieux de réception
+    n'en affichent aucun, et perdent les couples avant le premier appel.</p>
+  </div>
+</section>
+
+<section class="section" id="lieux">
+  <div class="enveloppe">
+    <p class="mention glisse">Les lieux</p>
+    <h2 class="enonce large glisse" style="margin-bottom:var(--pas)">Quatre endroits, une seule adresse.</h2>
+
+    <article class="lieu glisse">
+      <div class="chassis"><img src="img/espace-1.jpg" alt="L'orangerie" width="800" height="600" loading="lazy" decoding="async"></div>
+      <div class="sous-image">
+        <div><h3>L'orangerie</h3><span class="jauge">200 convives assis</span></div>
+        <p class="texte">Une nef de pierre et de verre ouverte sur le parc, prolongée d'une cuisine
+        professionnelle. Elle se chauffe l'hiver et s'ouvre entièrement l'été.</p>
+      </div>
+    </article>
+
+    <article class="lieu glisse">
+      <div class="chassis"><img src="img/espace-2.jpg" alt="L'allée des tilleuls" width="800" height="600" loading="lazy" decoding="async"></div>
+      <div class="sous-image">
+        <div><h3>L'allée des tilleuls</h3><span class="jauge">120 places assises</span></div>
+        <p class="texte">Pour la cérémonie laïque, sous des arbres bicentenaires. Un repli couvert
+        existe à trente mètres, et personne n'a jamais eu à s'en servir plus d'une heure.</p>
+      </div>
+    </article>
+
+    <article class="lieu glisse">
+      <div class="chassis"><img src="img/espace-3.jpg" alt="Le parc clos" width="800" height="600" loading="lazy" decoding="async"></div>
+      <div class="sous-image">
+        <div><h3>Le parc clos</h3><span class="jauge">Trois hectares</span></div>
+        <p class="texte">Cocktail sur la terrasse, jeux pour les enfants hors de vue des adultes,
+        feu d'artifice autorisé jusqu'à minuit.</p>
+      </div>
+    </article>
+
+    <article class="lieu glisse">
+      <div class="chassis"><img src="img/espace-4.jpg" alt="Les chambres" width="800" height="600" loading="lazy" decoding="async"></div>
+      <div class="sous-image">
+        <div><h3>Les chambres</h3><span class="jauge">Douze chambres, vingt-six couchages</span></div>
+        <p class="texte">Vos proches dorment sur place et vous retrouvent au brunch. Personne ne
+        reprend la route à trois heures du matin.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="section glisse" id="galerie">
+  <div class="enveloppe">
+    <p class="mention">En images</p>
+    <h2 class="enonce large" style="margin-bottom:56px">Ceux qui sont passés avant vous.</h2>
+    <div class="mosaique" id="mosaique">
+      <div class="tuile large" tabindex="0"><img src="img/galerie-1.jpg" alt="Table dressée" width="900" height="435" loading="lazy" decoding="async"></div>
+      <div class="tuile" tabindex="0"><img src="img/galerie-2.jpg" alt="Bouquet" width="600" height="600" loading="lazy" decoding="async"></div>
+      <div class="tuile haute" tabindex="0"><img src="img/galerie-3.jpg" alt="Les mariés dans le parc" width="600" height="1242" loading="lazy" decoding="async"></div>
+      <div class="tuile" tabindex="0"><img src="img/galerie-4.jpg" alt="Vin d'honneur" width="600" height="600" loading="lazy" decoding="async"></div>
+      <div class="tuile" tabindex="0"><img src="img/galerie-5.jpg" alt="Pièce montée" width="600" height="600" loading="lazy" decoding="async"></div>
+      <div class="tuile large" tabindex="0"><img src="img/galerie-6.jpg" alt="Dîner sous les guirlandes" width="900" height="435" loading="lazy" decoding="async"></div>
+      <div class="tuile" tabindex="0"><img src="img/galerie-7.jpg" alt="Les convives" width="600" height="600" loading="lazy" decoding="async"></div>
+      <div class="tuile" tabindex="0"><img src="img/galerie-8.jpg" alt="La façade" width="600" height="600" loading="lazy" decoding="async"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section citation glisse">
+  <div class="enveloppe">
+    <p class="mention">Témoignages d'illustration</p>
+    <figure>
+      <blockquote>« On cherchait un lieu où nos invités pourraient dormir. On a trouvé un endroit
+      d'où personne n'a voulu partir le dimanche. »</blockquote>
+      <figcaption>Camille et Thomas — juin 2026</figcaption>
+    </figure>
+    <div class="autres-avis">
+      <div><p>« Un seul mariage par week-end, ça change tout. On était chez nous, pas dans une
+      usine à réceptions. »</p><span>Inès et Paul — septembre 2025</span></div>
+      <div><p>« Le parc au coucher du soleil, nos photographes en parlent encore. Et la pluie du
+      matin n'a rien changé au programme. »</p><span>Léa et Marion — août 2025</span></div>
+      <div><p>« Nous avons visité onze lieux. C'est le seul dont nous sommes repartis en sachant
+      que c'était celui-là. »</p><span>Sarah et Antoine — mai 2026</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="histoire">
+  <div class="enveloppe">
+    <div class="duo glisse">
+      <div>
+        <p class="mention">Depuis 1782</p>
+        <h2 class="enonce">Une maison de famille, pas une salle.</h2>
+      </div>
+      <div>
+        <p class="texte">Le domaine est resté dans la même famille pendant sept générations.
+        Les communs ont été des écuries, puis un chai, avant de devenir l'orangerie
+        que vous verrez aujourd'hui.</p>
+        <p class="texte">Nous y habitons toute l'année. C'est pour cela que nous n'organisons
+        qu'une seule réception par week-end : on ne fait pas défiler des inconnus chez soi.</p>
+        <p class="texte">Nous vous accueillons nous-mêmes pour la visite, et nous serons là
+        le jour venu, discrets mais joignables.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section glisse" id="visite">
+  <div class="enveloppe">
+    <p class="mention">Prendre rendez-vous</p>
+    <h2 class="enonce large">Venez le voir.</h2>
+    <p class="texte" style="margin-bottom:56px">Trois informations suffisent. Nous rappelons sous
+    vingt-quatre heures avec les disponibilités réelles autour de votre date.</p>
+    <form id="form-visite" novalidate>
+      <div class="champs">
+        <div class="champ">
+          <label for="date">Date envisagée</label>
+          <input type="date" id="date" name="date" required>
+        </div>
+        <div class="champ">
+          <label for="invites">Nombre d'invités</label>
+          <select id="invites" name="invites" required>
+            <option value="">À préciser</option>
+            <option>Moins de 60</option>
+            <option>60 à 120</option>
+            <option>120 à 200</option>
+            <option>Plus de 200</option>
+          </select>
+        </div>
+        <div class="champ">
+          <label for="tel">Votre téléphone</label>
+          <input type="tel" id="tel" name="tel" placeholder="06 00 00 00 00" required>
+        </div>
+      </div>
+      <button class="envoyer" type="submit"><span class="trait"></span>Demander une visite</button>
+      <div class="accuse" id="accuse" hidden>
+        Demande enregistrée. Nous vous rappelons sous vingt-quatre heures.
+        <em>(Formulaire de démonstration : rien n'est envoyé.)</em>
+      </div>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer class="pied">
+  <div class="enveloppe">
+    <div class="colonnes">
+      <div>
+        <p class="enseigne-pied" data-nom>Votre Domaine</p>
+        <p>Lieu de réception privé</p>
+        <p data-commune>Dordogne</p>
+      </div>
+      <div>
+        <h3>Nous joindre</h3>
+        <p><a class="lien-souligne" href="tel:+33000000000" data-tel-lien>05 00 00 00 00</a></p>
+        <p>Visites sur rendez-vous,<br>du mardi au samedi.</p>
+      </div>
+      <div>
+        <h3>La page</h3>
+        <p><a class="lien-souligne" href="#saison">Disponibilités</a></p>
+        <p><a class="lien-souligne" href="#tarifs">Tarifs</a></p>
+        <p><a class="lien-souligne" href="#lieux">Les lieux</a></p>
+        <p><a class="lien-souligne" href="#galerie">Galerie</a></p>
+      </div>
+    </div>
+    <div class="bas">
+      <span>Maquette de démonstration — document de travail non contractuel.</span>
+      <span>Images et vidéo d'illustration.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="visionneuse" id="visionneuse" role="dialog" aria-modal="true" aria-label="Photo agrandie">
+  <button class="fermer" id="fermer-visionneuse" type="button">Fermer</button>
+  <img id="visionneuse-img" alt="">
+</div>
+
+<script>
+document.documentElement.className += ' js';
+(function () {
+  'use strict';
+  var doux = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- personnalisation : ?n=Nom&l=logo&v=Commune&c=Capacite&t=Telephone ---- */
+  var p = new URLSearchParams(location.search);
+  var nom = (p.get('n') || '').trim();
+  var logo = (p.get('l') || '').trim();
+  var tel = (p.get('t') || '').replace(/[^0-9+]/g, '');
+  function poser(cle, val) {
+    if (!val) return;
+    var n = document.querySelectorAll('[data-' + cle + ']');
+    for (var i = 0; i < n.length; i++) n[i].textContent = val;
+  }
+  poser('nom', nom);
+  poser('commune', (p.get('v') || '').trim());
+  poser('capacite', (p.get('c') || '').trim());
+  if (nom) document.title = nom + ' — mariages et réceptions';
+  if (logo) {
+    var el = document.getElementById('logo');
+    el.onload = function () { el.hidden = false; };
+    el.onerror = function () { el.hidden = true; };   /* repli : le nom écrit suffit */
+    el.alt = nom || 'Logo';
+    el.src = logo;
+  }
+  if (tel) {
+    var lisible = tel.length === 10 ? tel.replace(/(\d{2})(?=\d)/g, '$1 ') : tel;
+    var liens = document.querySelectorAll('[data-tel-lien]');
+    for (var j = 0; j < liens.length; j++) {
+      liens[j].textContent = lisible;
+      liens[j].setAttribute('href', 'tel:' + (tel[0] === '0' ? '+33' + tel.slice(1) : tel));
+    }
+  }
+
+  /* ---- filet : si les animations ne se jouent pas (onglet en arrière-plan, capture,
+     moteur exotique), on force l'état final. Un minuteur se déclenche là où
+     requestAnimationFrame reste muet. ---- */
+  if (doux) document.documentElement.classList.add('anime-fini');
+  else setTimeout(function () { document.documentElement.classList.add('anime-fini'); }, 4200);
+
+  /* ---- la vidéo n'est chargée qu'après la page : l'image d'attente porte l'affichage
+     initial, la vidéo ne pèse donc pas sur le temps de premier rendu ---- */
+  var film = document.getElementById('film');
+  var eco = navigator.connection && (navigator.connection.saveData ||
+            /2g|3g/.test(navigator.connection.effectiveType || ''));
+  /* Pas de vidéo sur téléphone : le décodage coûte près de trois secondes de
+     processeur sur un mobile d'entrée de gamme et faisait chuter la note de 99 à 32.
+     Le dézoom sur l'image d'attente conserve l'essentiel de l'effet, sans le prix. */
+  var grandEcran = window.matchMedia('(min-width: 900px)').matches;
+  function chargerVideo() {
+    if (doux || eco || !grandEcran) return;
+    /* l'écouteur AVANT play() : sinon l'événement est déjà passé quand on s'y abonne
+       et la vidéo reste invisible derrière son image d'attente */
+    function afficher() { film.classList.add('jouee'); }
+    film.addEventListener('playing', afficher, { once: true });
+    film.addEventListener('loadeddata', afficher, { once: true });
+    var s = document.createElement('source');
+    s.src = 'video/accueil.mp4'; s.type = 'video/mp4';
+    film.appendChild(s);
+    film.load();
+    var joue = film.play();
+    if (joue && joue.then) joue.then(afficher).catch(function () {});
+  }
+  if (document.readyState === 'complete') setTimeout(chargerVideo, 400);
+  else window.addEventListener('load', function () { setTimeout(chargerVideo, 400); });
+
+  /* ---- apparitions ---- */
+  var cibles = document.querySelectorAll('.glisse');
+  function toutMontrer() {
+    for (var i = 0; i < cibles.length; i++) cibles[i].classList.add('vu');
+  }
+  if (!('IntersectionObserver' in window) || doux) {
+    toutMontrer();
+  } else {
+    var obs = new IntersectionObserver(function (entrees) {
+      entrees.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('vu'); obs.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.06 });
+    for (var i = 0; i < cibles.length; i++) obs.observe(cibles[i]);
+    setTimeout(toutMontrer, 4200);
+  }
+
+  /* ---- barre au défilement ---- */
+  var barre = document.getElementById('barre');
+  var attend = false;
+  function auDefilement() {
+    barre.classList.toggle('posee', (window.scrollY || 0) > window.innerHeight * 0.72);
+    attend = false;
+  }
+  window.addEventListener('scroll', function () {
+    if (!attend) { attend = true; requestAnimationFrame(auDefilement); }
+  }, { passive: true });
+  auDefilement();
+
+  /* ---- samedis de la saison ---- */
+  var MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+              'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  var ANNEE = new Date().getFullYear() + 1;
+  var s = document.getElementById('annee-saison');
+  if (s) s.textContent = ANNEE;
+  var cal = document.getElementById('calendrier');
+  var bloc = document.createDocumentFragment();
+
+  [4, 5, 6, 7, 8].forEach(function (m) {
+    var samedis = [], d = new Date(ANNEE, m, 1);
+    while (d.getMonth() === m) {
+      if (d.getDay() === 6) samedis.push(new Date(d));
+      d.setDate(d.getDate() + 1);
+    }
+    /* Déterministe et majoritairement réservé : un lieu recherché montre ce qu'il reste,
+       pas ce qui est vide. Hachage dispersant, car les samedis sont espacés de 7 jours
+       et une simple multiplication donnerait une suite régulière. */
+    var etats = samedis.map(function (x) {
+      var h = x.getDate() * 2654435761 + (m + 1) * 40503;
+      h = (h ^ (h >>> 13)) >>> 0;
+      var g = h % 100;
+      return g < 62 ? 'pris' : (g < 80 ? 'option' : 'libre');
+    });
+    var libres = etats.filter(function (e) { return e === 'libre'; }).length;
+
+    var art = document.createElement('article');
+    art.className = 'mois';
+    var t = document.createElement('h3'); t.textContent = MOIS[m];
+    var r = document.createElement('span'); r.className = 'reste';
+    r.textContent = libres === 0 ? 'complet'
+                  : libres + (libres > 1 ? ' samedis libres' : ' samedi libre');
+    var ul = document.createElement('ul'); ul.className = 'jours';
+    samedis.forEach(function (x, i) {
+      var e = etats[i];
+      var li = document.createElement('li'); li.className = e;
+      var j = document.createElement('span'); j.className = 'jour'; j.textContent = x.getDate();
+      var q = document.createElement('span'); q.className = 'quoi';
+      q.textContent = e === 'pris' ? 'réservé' : (e === 'option' ? 'option' : 'libre');
+      li.appendChild(j); li.appendChild(q); ul.appendChild(li);
+    });
+    art.appendChild(t); art.appendChild(r); art.appendChild(ul);
+    bloc.appendChild(art);
+  });
+  cal.appendChild(bloc);
+
+  /* ---- visionneuse ---- */
+  var vis = document.getElementById('visionneuse');
+  var visImg = document.getElementById('visionneuse-img');
+  function ouvrir(src, alt) {
+    visImg.src = src; visImg.alt = alt || '';
+    vis.classList.add('ouverte');
+    document.body.style.overflow = 'hidden';
+  }
+  function fermer() { vis.classList.remove('ouverte'); document.body.style.overflow = ''; }
+  var mos = document.getElementById('mosaique');
+  mos.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target.closest('.tuile') : null;
+    if (t) { var im = t.querySelector('img'); ouvrir(im.src, im.alt); }
+  });
+  mos.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var t = e.target.closest ? e.target.closest('.tuile') : null;
+    if (t) { e.preventDefault(); var im = t.querySelector('img'); ouvrir(im.src, im.alt); }
+  });
+  vis.addEventListener('click', fermer);
+  document.getElementById('fermer-visionneuse').addEventListener('click', fermer);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fermer(); });
+
+  /* ---- formulaire de démonstration ---- */
+  document.getElementById('form-visite').addEventListener('submit', function (e) {
+    e.preventDefault();
+    document.getElementById('accuse').hidden = false;
+  });
+})();
+</script>
+</body>
+</html>
